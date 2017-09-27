@@ -1,3 +1,6 @@
+" Start in workspace dir
+" cd ~/workspace
+
 " Sets how many lines of history VIM has to remember
 set history=700
 set undolevels=700
@@ -14,30 +17,35 @@ set autoread
 let mapleader = ","
 let g:mapleader = ","
 
-" Fast saving
+" Quick saving
 nmap <leader>w :w!<cr>
+nmap <leader>q :q<cr>
+nmap <leader>wq :wq<cr>
+
 
 " Show whitespace
 " MUST be inserted BEFORE the colorscheme command
-autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
-au InsertLeave * match ExtraWhitespace /\s\+$/
-
+"autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
+"autocmd InsertLeave * match ExtraWhitespace /\s\+$/ 
+ 
 set t_Co=256
-color Tomorrow
+color Tomorrow-Night
+
+map <leader><leader>cl :colorscheme default<cr>
+map <leader><leader>cd :colorscheme Tomorrow-Night<cr>
+
+map <C-n> :NERDTreeToggle<CR>
+map <C-t> :TlistToggle<CR>
 
 "VIM user interface
 "Set 7 lines to the cursor - when moving vertically using j/k
-set so=14
+set so=0
 
 " Turn on the WiLd menu
 set wildmenu
 
 " Ignore compiled files
-set wildignore=*.o,*~,*.pyc,*.pyo
-
-" Tab navigating
-nmap <Tab> gt
-nmap <S-Tab> gT
+set wildignore=*.o,*~,*.pyc
 
 "Completion
 set complete=.,b,u,]
@@ -54,6 +62,12 @@ set hid
 " Configure backspace so it acts as it should act
 set backspace=eol,start,indent
 set whichwrap+=<,>,h,l
+
+
+" Linebreak on 500 characters
+set lbr
+"set tw=79
+set nowrap
 
 " Search
 set ignorecase
@@ -75,7 +89,6 @@ set mat=2
 " No annoying sound on errors
 set noerrorbells
 set novisualbell
-set t_vb=0
 set tm=500
 
 
@@ -109,22 +122,16 @@ set nowb
 set noswapfile
 
 " Text, tab and indent related
-" Use spaces instead of tabs
-set expandtab
 " Be smart when using tabs ;)
 set smarttab
 
+set expandtab
 " 1 tab == 4 spaces
 set shiftwidth=4
 set tabstop=4
 " show whitespace char
 map <leader>l :set list!<cr>
 
-" Linebreak on 500 characters
-set lbr
-set tw=79
-set nowrap
-"set colorcolumn=80
 highlight ColorColumn ctermbg=233
 
 set ai "Auto indent
@@ -144,28 +151,14 @@ call pathogen#infect()
 " " git clone git://github.com/Lokaltog/vim-powerline.git
 " Settings for ctrlp
 " " cd ~/.vim/bundle
+
 " ctrlp
 " cd ~/.vim/bundle
 " git clone https://github.com/kien/ctrlp.vim.git
 let g:ctrlp_max_height = 30
 
-" Settings for python-mode
-" " cd ~/.vim/bundle
-" " git clone https://github.com/klen/python-mode
-map <Leader>g :call RopeGotoDefinition()<CR>
-let ropevim_enable_shortcuts = 1
-let g:pymode_rope_goto_def_newwin = "vnew"
-let g:pymode_rope_extended_complete = 1
-let g:pymode_breakpoint = 0
-let g:pymode_syntax = 1
-let g:pymode_syntax_builtin_objs = 0
-let g:pymode_syntax_builtin_funcs = 0
-let g:pymode_folding = 0
-let g:pymode_utils_whitespaces = 0
-let g:pymode_syntax_slow_sync = 0
-map <Leader>b Oimport ipdb; ipdb.set_trace() # BREAKPOINT<C-c>
-
 set foldmethod=indent
+set foldlevelstart=20
 
 " Moving around, tabs, windows and buffers
 " Treat long lines as break lines (useful when moving around in them)
@@ -175,19 +168,27 @@ map k gk
 " Disable highlight when <leader><cr> is pressed
 map <silent> <leader><leader> :noh<cr>
 
-
-" Natural split
+" Natural split open
 set splitbelow
 set splitright
 
 " Smart way to move between windows
-"map <C-j> <C-W>j
-"map <C-k> <C-W>k
+map <C-j> <C-W>j
+map <C-k> <C-W>k
 map <C-h> <C-W>h
 map <C-l> <C-W>l
 
+" Switch between tabs
+map <Tab> gt
+map <S-Tab> gT
+
+" Easy window resize
+map + <C-W>>
+map - <C-W><
+
+
 " Useful mappings for managing tabs
-map <leader>tn :tabnew<cr>
+map <leader>tn :tabnew<cr>:e .<cr>
 map <leader>tc :tabclose<cr>
 map <leader>tm :tabmove
 
@@ -198,8 +199,6 @@ map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
-" quick saving
-"map <leader>w :w<cr>
 " Specify the behavior when switching between buffers
 try
   set switchbuf=useopen,usetab,newtab
@@ -222,24 +221,29 @@ set viminfo^=%
 " cd ~/.vim/bundle
 " " git clone git://github.com/Lokaltog/vim-powerline.git
 set laststatus=2
+set statusline=
+set statusline=%-10.3n\
+set statusline+=%f\
+set statusline+=%h%m%r%w
+set statusline+=\[%{strlen(&ft)?&ft:'none'}]
+set statusline+=%=
+set statusline+=0x%-8B
+set statusline+=%-14(%l,%c%V%)
+set statusline+=%<%P
 
-" Format the status line
-"set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l
 
 " Editing mappings
 " Remap VIM 0 to first non-blank character
 map 0 ^
+
+" Finding matching bracket
+noremap % v%
 
 " Move a line of text using ALT+[jk] or Comamnd+[jk] on mac
 nmap <M-j> mz:m+<cr>`z
 nmap <M-k> mz:m-2<cr>`z
 vmap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
 vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
-
-
-" quick S&R
-noremap ;; :%s:::g<Left><Left><Left>
-noremap ;' :%s:::cg<Left><Left><Left><Left>
 
 " vimgrep searching and cope displaying
 " When you press gv you vimgrep after the selected text
@@ -273,6 +277,13 @@ map <leader>p :cp<cr>
 " Spell checking
 " Pressing ,ss will toggle and untoggle spell checking
 map <leader>ss :set spell!<cr>
+map <leader>cs 1z=
+
+" show line number
+map <leader>n :set number!<cr>
+
+" yank the right way
+map yy ddu
 
 " Shortcuts using <leader>
 map <leader>sn ]s
@@ -280,6 +291,12 @@ map <leader>sp [s
 map <leader>sa zg
 map <leader>s? z=
 
+" Show line ruler 
+if exists('+colorcolumn')
+    set colorcolumn=80
+else
+    au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
+endif
 
 " Toggle paste mode on and off
 "map <c-c> :setlocal paste!<cr>
@@ -337,8 +354,6 @@ endfunction
 inoremap <silent>j <C-R>=OmniPopup('j')<CR>
 inoremap <silent>k <C-R>=OmniPopup('k')<CR>
 
-" Curly close
-"inoremap <silent>{ {<CR>}<Esc>yyP$xi<Tab><Tab>
 
 " Don't close window, when deleting a buffer
 command! Bclose call <SID>BufcloseCloseIt()
@@ -361,3 +376,43 @@ function! <SID>BufcloseCloseIt()
    endif
 endfunction
 
+autocmd   FileType cpp source ~/.vim/cpp.vim
+autocmd   FileType c source ~/.vim/cpp.vim
+autocmd   FileType h source ~/.vim/cpp.vim
+autocmd   FileType py source ~/.vim/py.vim
+autocmd   FileType sln source ~/.vim/sln.vim
+autocmd   FileType e source ~/.vim/sln.vim
+
+"SLN filetype
+au BufRead,BufNewFile *.sln set filetype=sln
+  
+nmap <leader>e :e.<CR>
+
+" Go to last file(s) if invoked without arguments.
+autocmd VimLeave * nested if (!isdirectory($HOME . "/.vim")) |
+    \ call mkdir($HOME . "/.vim") |
+    \ endif |
+    \ execute "mksession! " . $HOME . "/.vim/Session.vim"
+
+autocmd VimEnter * nested if argc() == 0 && filereadable($HOME . "/.vim/Session.vim") |
+    \ execute "source " . $HOME . "/.vim/Session.vim"
+
+
+" NERDTress File highlighting
+function! NERDTreeHighlightFile(extension, fg, bg, guifg, guibg)
+ exec 'autocmd filetype nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg .' guibg='. a:guibg .' guifg='. a:guifg
+  exec 'autocmd filetype nerdtree syn match ' . a:extension .' #^\s\+.*'. a:extension .'$#'
+endfunction
+
+  call NERDTreeHighlightFile('jade', 'green', 'none', 'green', '#151515')
+  call NERDTreeHighlightFile('ini', 'yellow', 'none', 'yellow', '#151515')
+  call NERDTreeHighlightFile('md', 'blue', 'none', '#3366FF', '#151515')
+  call NERDTreeHighlightFile('yml', 'yellow', 'none', 'yellow', '#151515')
+  call NERDTreeHighlightFile('config', 'yellow', 'none', 'yellow', '#151515')
+  call NERDTreeHighlightFile('conf', 'yellow', 'none', 'yellow', '#151515')
+  call NERDTreeHighlightFile('json', 'yellow', 'none', 'yellow', '#151515')
+  call NERDTreeHighlightFile('html', 'yellow', 'none', 'yellow', '#151515')
+  call NERDTreeHighlightFile('css', 'cyan', 'none', 'cyan', '#151515')
+  call NERDTreeHighlightFile('sh', 'Red', 'none', 'red', '#151515')
+  call NERDTreeHighlightFile('js', 'Red', 'none', '#ffa500', '#151515')
+  call NERDTreeHighlightFile('py', 'Magenta', 'none', '#ff00ff', '#151515')
